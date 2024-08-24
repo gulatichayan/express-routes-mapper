@@ -76,7 +76,14 @@ const mapRoutes = (routes, pathToController, middlewareGenerals = []) => {
     } catch (err) {
       require('@babel/register');
       handler = require(`${myPathToController}${controller}`).default;
-      contr = new handler();
+      
+      isConstructable = isConstructor(handler);
+      
+      if (isConstructable) {
+        contr = new handler();
+      } else {
+        contr = handler();
+      }
     }
 
     router.route(myPath)[requestMethod](middlewares, contr[controllerMethod]);
